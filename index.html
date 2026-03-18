@@ -67,9 +67,83 @@
       border-color: #f97316;
     }
     section { scroll-margin-top: 30px; }
+
+    /* ESTILOS DEL CARRUSEL */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      border-bottom: 4px solid #f97316;
+    }
+    .carousel-slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      background-size: cover;
+      background-position: center;
+    }
+    .carousel-slide.active {
+      opacity: 1;
+    }
+    .carousel-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      color: white;
+      padding: 40px 20px 20px;
+      text-align: center;
+    }
+    .carousel-indicators {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      border: 1px solid #f97316;
+    }
+    .indicator.active {
+      background: #f97316;
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body class="bg-[#1a1a1a] text-gray-200">
+
+<!-- CARRUSEL AUTOMÁTICO CON LAS 4 PORTADAS -->
+<div class="carousel-container" id="carousel">
+  <div class="carousel-slide active" style="background-image: url('portada1.jpg');"></div>
+  <div class="carousel-slide" style="background-image: url('portada2.jpg');"></div>
+  <div class="carousel-slide" style="background-image: url('portada3.jpg');"></div>
+  <div class="carousel-slide" style="background-image: url('portada4.jpg');"></div>
+  
+  <!-- Overlay con título -->
+  <div class="carousel-overlay">
+    <h1 class="text-4xl md:text-6xl font-black text-[#f97316] mb-2">MOTORES Y MOTOREDUCTORES JESÚS</h1>
+    <p class="text-xl text-white">Jesús Ortiz · Compra, venta y embobinados</p>
+  </div>
+  
+  <!-- Indicadores -->
+  <div class="carousel-indicators">
+    <span class="indicator active" onclick="goToSlide(0)"></span>
+    <span class="indicator" onclick="goToSlide(1)"></span>
+    <span class="indicator" onclick="goToSlide(2)"></span>
+    <span class="indicator" onclick="goToSlide(3)"></span>
+  </div>
+</div>
 
 <div class="max-w-6xl mx-auto p-4 md:p-6">
 
@@ -100,18 +174,6 @@
     <a href="#nosotros" class="block py-2 hover:text-[#f97316]">NOSOTROS</a>
     <a href="#contacto" class="block py-2 hover:text-[#f97316]">CONTACTO</a>
   </div>
-
-  <!-- HERO con logo hexagonal -->
-  <section id="inicio" class="mb-16 text-center">
-    <div class="hexagon-logo">
-      <span>M</span>
-    </div>
-    <div class="hexagon-text">MOTORES Y MOTOREDUCTORES</div>
-    <h1 class="text-4xl md:text-5xl font-black text-[#f97316] mb-2">MOTORES Y MOTOREDUCTORES JESÚS</h1>
-    <p class="text-xl text-gray-300 mb-2">Jesús Ortiz · Propietario</p>
-    <p class="text-lg text-gray-400 max-w-2xl mx-auto">Compra y venta de motores y motorreductores usados · Embobinados · Servicio industrial</p>
-    <div class="w-24 h-1 bg-[#f97316] mx-auto mt-6"></div>
-  </section>
 
   <!-- SERVICIOS -->
   <section id="servicios" class="mb-16">
@@ -187,10 +249,43 @@
 </div>
 
 <script>
+  // Menú móvil
   const menuBtn = document.getElementById('menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
   menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
   document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+  // CARRUSEL AUTOMÁTICO
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.carousel-slide');
+  const indicators = document.querySelectorAll('.indicator');
+  const totalSlides = slides.length;
+
+  function showSlide(index) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    indicators.forEach(ind => ind.classList.remove('active'));
+    
+    slides[index].classList.add('active');
+    indicators[index].classList.add('active');
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    let next = (currentSlide + 1) % totalSlides;
+    showSlide(next);
+  }
+
+  function goToSlide(index) {
+    showSlide(index);
+  }
+
+  // Cambiar cada 5 segundos
+  setInterval(nextSlide, 5000);
+
+  // Hacer que los indicadores funcionen
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => goToSlide(index));
+  });
 </script>
 
 </body>
